@@ -1,9 +1,13 @@
 import express from "express";
 import dbConnnection from "./database/database";
 import cors from "cors";
+import dotenv from "dotenv";
 import router from "./routes/routes";
+
+dotenv.config();
+
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 dbConnnection();
 app.use(express.json());

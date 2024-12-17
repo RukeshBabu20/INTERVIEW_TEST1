@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import * as authService from "../services/auth-service";
+import { createUser, findUser } from "../services/auth-service";
 
 export const createData = async (
   req: Request,
@@ -18,75 +19,23 @@ export const createData = async (
   }
 };
 
-export const showData = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const register = async (req: Request, res: Response) => {
+  const { username, password, email } = req.body;
   try {
-    const result = await authService.showService();
-    if (result) {
-      res.status(200).json(result);
-    } else {
-      res.status(204).json({ message: "No dta found" });
+    if (!username || !password) {
+      return res
+        .status(400)
+        .json({ message: "Username and password are required" });
     }
-  } catch (error) {
-    res.status(500).json({ message: "Failed to get data" });
-  }
-};
 
-export const showIdData = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const { id } = req.params;
-
-  try {
-    const result = await authService.showIdService(id);
-    console.log(result);
-    if (result) {
-      res.status(200).json(result);
-    } else {
-      res.status(204).json({ message: "No dta found" });
+    const existingUser = findUser(username);
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists" });
     }
-  } catch (error) {
-    res.status(500).json({ message: "Failed to get data" });
-  }
-};
 
-export const updateData = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const { id } = req.params;
-  try {
-    const result = await authService.updateService(id, req.body);
-    if (result) {
-      res.status(200).json({ message: "Data updated", result });
-    } else {
-      res.status(204).json({ message: "No dta found" });
-    }
+    const user = await createUser(username, password);
+    return res.status(201).json({ message: "User created successfully", user });
   } catch (error) {
-    res.status(500).json({ message: "Failed to update data" });
-  }
-};
-
-export const deleteData = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const { id } = req.params;
-  try {
-    const result = await authService.deleteService(id);
-    if (result) {
-      res.status(200).json({ message: "data deleted", result });
-    } else {
-      res.status(204).json({ message: "No dta found" });
-    }
-  } catch (error) {
-    res.status(500).json({ message: "Failed to delete data" });
+    res.status(500).json({ message: "Failed to create data" });
   }
 };
