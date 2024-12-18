@@ -5,16 +5,13 @@ const authSchema: Schema<authType> = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    maxlength: 20,
   },
   username: {
     type: String,
     required: true,
-    maxlength: 15,
   },
   password: {
-    type: Number,
-    maxlength: 15,
+    type: String,
     required: true,
   },
 });

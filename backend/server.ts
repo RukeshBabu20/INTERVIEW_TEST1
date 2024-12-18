@@ -8,9 +8,8 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-dbConnnection();
 app.use(express.json());
+dbConnnection();
 app.use(cors());
 
 app.use("/employee", router);

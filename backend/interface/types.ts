@@ -7,5 +7,5 @@ export interface employeeType {
 export interface authType {
   email: string;
   username: string;
-  password: number;
+  password: string;
 }

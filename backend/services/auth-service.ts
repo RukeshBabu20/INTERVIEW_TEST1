@@ -2,26 +2,35 @@ import authModel from "../models/auth-model";
 import bcrypt from "bcryptjs";
 import { authType } from "../interface/types";
 
-export const createService = async (data: authType) => {
+export const createUser = async (data: authType) => {
   return await authModel.create(data);
 };
 
 interface User {
   username: string;
   password: string;
+  email: string;
 }
 
 const users: User[] = [];
 
 // Create a new user
-export const createUser = async (username: string, password: string) => {
+export const registerUser = async (
+  username: string,
+  password: string,
+  email: string
+) => {
+  console.log(username, password, email, "Register user service");
   const hashedPassword = await bcrypt.hash(password, 10);
-  const newUser: User = { username, password: hashedPassword };
-  users.push(newUser);
-  return newUser;
+  console.log(hashedPassword);
+  const newUser: authType = { username, email, password: hashedPassword };
+  // users.push(newUser);
+  console.log(newUser);
+  return await authModel.create(newUser);
 };
 
 // Find user by username
-export const findUser = (email: string) => {
-  return authModel.find((user: any) => user.email === email);
+export const findUser = async (email: string) => {
+  const user = await authModel.findOne({email});
+  return user;
 };
