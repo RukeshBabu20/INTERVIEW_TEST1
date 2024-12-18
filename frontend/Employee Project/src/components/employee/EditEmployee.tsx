@@ -27,6 +27,14 @@ export default function EditEmployee() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const token = localStorage.getItem("authToken");
+
+    if (!token) {
+      navigate("/");
+    }
+  }, []);
+
+  useEffect(() => {
     const fetchUserData = async () => {
       const token = localStorage.getItem("authToken");
       if (token) {
@@ -112,6 +120,14 @@ export default function EditEmployee() {
 
   return (
     <Container maxWidth="sm">
+      <Button
+        style={{ display: "flex", justifyContent: "center" }}
+        onClick={() => {
+          navigate("/dashboard");
+        }}
+      >
+        Go Back
+      </Button>
       <Paper elevation={3} sx={{ padding: 4, marginTop: 5 }}>
         <Typography variant="h5" align="center" gutterBottom mb={2}>
           Edit User

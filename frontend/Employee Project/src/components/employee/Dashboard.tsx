@@ -54,6 +54,14 @@ export default function Dashboard() {
     }
   };
 
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+
+    if (!token) {
+      navigate("/");
+    }
+  }, []);
+
   return (
     <>
       <Button
@@ -63,6 +71,15 @@ export default function Dashboard() {
         }}
       >
         Add Employee
+      </Button>
+      <Button
+        style={{ display: "flex", justifyContent: "center" }}
+        onClick={() => {
+          localStorage.clear();
+          navigate("/");
+        }}
+      >
+        Logout
       </Button>
       <TableContainer component={Paper}>
         <Table>

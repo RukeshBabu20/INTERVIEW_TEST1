@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   TextField,
@@ -81,8 +81,24 @@ export default function AddEmployee() {
     }
   };
 
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+
+    if (!token) {
+      navigate("/");
+    }
+  }, []);
+
   return (
     <Container maxWidth="sm">
+      <Button
+        style={{ display: "flex", justifyContent: "center" }}
+        onClick={() => {
+          navigate("/dashboard");
+        }}
+      >
+        Go Back
+      </Button>
       <Paper elevation={3} sx={{ padding: 4, marginTop: 5 }}>
         <Typography variant="h5" align="center" gutterBottom mb={2}>
           Add User
