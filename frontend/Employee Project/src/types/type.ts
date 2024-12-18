@@ -10,3 +10,9 @@ export interface authType {
   username: string;
   password: number;
 }
+
+export interface AddEmployee {
+  name: string;
+  department: string;
+  salary: number;
+}

@@ -7,6 +7,8 @@ import {
   Container,
   Paper,
 } from "@mui/material";
+import * as api from "../../services/api-services";
+import { useNavigate } from "react-router-dom";
 
 const Login: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -18,6 +20,8 @@ const Login: React.FC = () => {
     email: "",
     password: "",
   });
+
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -51,16 +55,35 @@ const Login: React.FC = () => {
     return isValid;
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (validateForm()) {
       console.log("Form Submitted:", formData);
-      alert("Login Successful!");
+      try {
+        const result = await api.login(formData);
+        if (result && result.token) {
+          localStorage.setItem("authToken", result.token);
+          alert("Login Success!");
+          navigate("/dashboard");
+        } else {
+          alert("Login Failed!");
+        }
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
   return (
     <Container maxWidth="sm">
+      <Button
+        style={{ display: "flex", justifyContent: "center" }}
+        onClick={() => {
+          navigate("/register");
+        }}
+      >
+        Register
+      </Button>
       <Paper elevation={3} sx={{ padding: 4, marginTop: 5 }}>
         <Typography variant="h5" align="center" gutterBottom mb={2}>
           Login

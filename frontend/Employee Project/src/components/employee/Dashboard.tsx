@@ -1,4 +1,4 @@
-import { Edit, Delete, Add } from "@mui/icons-material";
+import { Edit, Delete } from "@mui/icons-material";
 import {
   TableContainer,
   Table,
@@ -24,33 +24,44 @@ export default function Dashboard() {
       salary: 0,
     },
   ]);
-  console.log(employees);
+
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const result = await api.showData();
-        setEmployees(result);
-      } catch (error) {
-        console.log(error);
+      const token = localStorage.getItem("authToken");
+      if (token) {
+        try {
+          const result = await api.showData(token);
+          setEmployees(result);
+        } catch (error) {
+          console.log(error);
+        }
       }
     };
     fetchData();
   }, []);
 
   const handleDelete = async (id: string) => {
-    try {
-      await api.deleteData(id);
-      navigate("/dashboard");
-    } catch (error) {
-      console.log(error);
+    const token = localStorage.getItem("authToken");
+    if (token) {
+      try {
+        await api.deleteData(id, token);
+        window.location.reload();
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
-  console.log(employees);
+
   return (
     <>
-      <Button style={{ display: "flex", justifyContent: "center" }}>
+      <Button
+        style={{ display: "flex", justifyContent: "center" }}
+        onClick={() => {
+          navigate("/add-employee");
+        }}
+      >
         Add Employee
       </Button>
       <TableContainer component={Paper}>
@@ -72,7 +83,12 @@ export default function Dashboard() {
                 <TableCell>{emp.department}</TableCell>
                 <TableCell>{emp.salary}</TableCell>
                 <TableCell>
-                  <IconButton color="primary">
+                  <IconButton
+                    color="primary"
+                    onClick={() => {
+                      navigate(`/update/${emp._id}`);
+                    }}
+                  >
                     <Edit />
                   </IconButton>
                   <IconButton

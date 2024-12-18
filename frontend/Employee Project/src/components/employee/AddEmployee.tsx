@@ -7,20 +7,20 @@ import {
   Container,
   Paper,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import * as api from "../../services/api-services";
+import { useNavigate } from "react-router-dom";
 
-const Register: React.FC = () => {
+export default function AddEmployee() {
   const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
+    name: "",
+    department: "",
+    salary: "",
   });
 
   const [errors, setErrors] = useState({
-    username: "",
-    email: "",
-    password: "",
+    name: "",
+    department: "",
+    salary: "",
   });
 
   const navigate = useNavigate();
@@ -39,24 +39,21 @@ const Register: React.FC = () => {
 
   const validateForm = (): boolean => {
     let isValid = true;
-    const newErrors = { username: "", email: "", password: "" };
+    const newErrors = { name: "", department: "", salary: "" };
 
-    if (!formData.username) {
-      newErrors.username = "Username is required";
+    if (!formData.name) {
+      newErrors.name = "Name is required";
       isValid = false;
     }
-    if (!formData.email) {
-      newErrors.email = "Email is required";
-      isValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email format is invalid";
+    if (!formData.department) {
+      newErrors.department = "Department is required";
       isValid = false;
     }
-    if (!formData.password) {
-      newErrors.password = "Password is required";
+    if (!formData.salary) {
+      newErrors.salary = "Salary is required";
       isValid = false;
-    } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
+    } else if (isNaN(Number(formData.salary))) {
+      newErrors.salary = "Salary must be a valid number";
       isValid = false;
     }
 
@@ -67,72 +64,65 @@ const Register: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (validateForm()) {
-      try {
-        const result = await api.register(formData);
-        if (result) {
-          localStorage.setItem("authToken", result.token);
-          alert("Registration Success!");
-          navigate("/");
-        } else {
-          alert("Registration Failed!");
+      const token = localStorage.getItem("authToken");
+      if (token) {
+        try {
+          const result = await api.createData(formData as any, token);
+          if (result) {
+            alert("User Created Successfully!");
+            navigate("/dashboard");
+          } else {
+            alert("User Creation Failed!");
+          }
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error);
       }
     }
   };
 
   return (
     <Container maxWidth="sm">
-      <Button
-        style={{ display: "flex", justifyContent: "center" }}
-        onClick={() => {
-          navigate("/");
-        }}
-      >
-        Login
-      </Button>
       <Paper elevation={3} sx={{ padding: 4, marginTop: 5 }}>
         <Typography variant="h5" align="center" gutterBottom mb={2}>
-          Register
+          Add User
         </Typography>
         <form onSubmit={handleSubmit}>
           <Box mb={2}>
             <TextField
               fullWidth
-              label="Username"
-              name="username"
+              label="Name"
+              name="name"
               variant="outlined"
-              value={formData.username}
+              value={formData.name}
               onChange={handleChange}
-              error={!!errors.username}
-              helperText={errors.username}
+              error={!!errors.name}
+              helperText={errors.name}
             />
           </Box>
           <Box mb={2}>
             <TextField
               fullWidth
-              label="Email"
-              name="email"
-              type="email"
+              label="Department"
+              name="department"
               variant="outlined"
-              value={formData.email}
+              value={formData.department}
               onChange={handleChange}
-              error={!!errors.email}
-              helperText={errors.email}
+              error={!!errors.department}
+              helperText={errors.department}
             />
           </Box>
           <Box mb={2}>
             <TextField
               fullWidth
-              label="Password"
-              name="password"
-              type="password"
+              label="Salary"
+              name="salary"
+              type="number"
               variant="outlined"
-              value={formData.password}
+              value={formData.salary}
               onChange={handleChange}
-              error={!!errors.password}
-              helperText={errors.password}
+              error={!!errors.salary}
+              helperText={errors.salary}
             />
           </Box>
           <Button
@@ -142,12 +132,10 @@ const Register: React.FC = () => {
             fullWidth
             sx={{ marginTop: 2 }}
           >
-            Register
+            Create User
           </Button>
         </form>
       </Paper>
     </Container>
   );
-};
-
-export default Register;
+}

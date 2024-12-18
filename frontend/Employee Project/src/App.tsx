@@ -3,6 +3,8 @@ import "./App.css";
 import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
 import Dashboard from "./components/employee/Dashboard";
+import AddEmployee from "./components/employee/AddEmployee";
+import EditEmployee from "./components/employee/EditEmployee";
 
 function App() {
   return (
@@ -12,10 +14,8 @@ function App() {
           <Route path="/" element={<Login />}></Route>
           <Route path="/register" element={<Register />}></Route>
           <Route path="/dashboard" element={<Dashboard />}></Route>
-          {/* <Route path="/update/:id" element={<Update />}></Route>
-          <Route path="/login" element={<Login />}></Route>
-          <Route path="/addCart/:id" element={<AddCart />}></Route>
-          <Route path="/  dashboard" element={<Cart />}></Route> */}
+          <Route path="/add-employee" element={<AddEmployee />}></Route>
+          <Route path="/update/:id" element={<EditEmployee />}></Route>
         </Routes>
       </BrowserRouter>
     </>
